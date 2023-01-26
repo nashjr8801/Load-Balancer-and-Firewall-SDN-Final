@@ -40,13 +40,7 @@ class Firewall(object):
           dip= IPAddr(row['dstip'])
         self.AddRule(dpid_to_str(connection.dpid),m, sip, dip, int(row['dstport']))
 
-      #print(f'Added rule: \t Source mac: {row["name"]} works in the {row["department"]} department, and was born in {row["birthday month"]}.')
-    #self.AddRule(dpid_to_str(connection.dpid), EthAddr('00:00:00:00:00:02'), 0, 0, 0)
-    #self.AddRule(dpid_to_str(connection.dpid), 0, IPAddr('10.0.0.1'), IPAddr('10.0.0.4'),0)
-    #self.AddRule(dpid_to_str(connection.dpid), 0, 0, IPAddr('10.0.0.3'), 80)
-    # We want to hear PacketIn messages, so we listen
-    # to the connection
-    #log.info("Firewall rules installed on %s", dpid_to_str(connection.dpid))
+      
     connection.addListeners(self)
 
     # We just use this to know when to log a helpful message

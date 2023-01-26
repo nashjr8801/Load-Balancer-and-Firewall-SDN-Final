@@ -46,10 +46,6 @@ class LoadBalancer(object):
 	# The plot work is done here, after we quit mininet.	
 	def _handle_ConnectionDown (self, event): 
 		N = self.total_servers
-		# count1 = dictReq['10.0.0.5']
-		# count2 = dictReq['10.0.0.6']
-		# count3 = dictReq['10.0.0.7']
-		# count4 = dictReq['10.0.0.8']
 
 		#Counter = (count1, count2, count3, count4)
 		std = (0, 0, 0, 0)
@@ -130,25 +126,25 @@ class LoadBalancer(object):
 
 	#Send ARP reqs flood to know  macth ip mac port of servers  		
 	def send_proxied_arp_request(self, connection, ip):
-											#construct the arp packet
-		ar=arp() 							#type of packet
-		ar.hwtype = ar.HW_TYPE_ETHERNET 	#type of hardware tyr
-		ar.prototype = ar.PROTO_TYPE_IP 	#protocol type
-		ar.hwlen = 6  						#hardware addrese length 6 bytes and mac=ipv6 
-		ar.protolen = ar.protolen 			#the ipv4 length 
+											
+		ar=arp() 							
+		ar.hwtype = ar.HW_TYPE_ETHERNET 	
+		ar.prototype = ar.PROTO_TYPE_IP 	
+		ar.hwlen = 6  						 
+		ar.protolen = ar.protolen 			 
 		ar.opcode = ar.REQUEST
-		ar.hwdst = self.ethernet_broad 		# broadcast to all possible  interfaces
+		ar.hwdst = self.ethernet_broad 		
 		ar.protodst = ip 					#ip dest to send 
-		ar.hwsrc = self.lb_mac 				#fake mac address
+		ar.hwsrc = self.lb_mac 				
 		ar.protosrc = self.lb_real_ip 		# the real ip of the address
 
-											# packet has inside it the r packet 
+											 
 		e = ethernet(type=ethernet.ARP_TYPE, src=self.lb_mac, dst=self.ethernet_broad)
-		e.set_payload(ar) 					# take the previous packet and put it into th message data
+		e.set_payload(ar) 					
 		
-		msg = of.ofp_packet_out() 			# send packet out cause we dont need an entry in the flow table 
+		msg = of.ofp_packet_out() 			 
 		msg.data = e.pack()			
-		msg.actions.append(of.ofp_action_nw_addr(of.OFPAT_SET_NW_DST,ip)) 	# send to this ip 
+		msg.actions.append(of.ofp_action_nw_addr(of.OFPAT_SET_NW_DST,ip)) 	 
 		msg.actions.append(of.ofp_action_output(port = of.OFPP_FLOOD)) 		# flood to all ports
 		
 		connection.send(msg)
@@ -180,7 +176,7 @@ class LoadBalancer(object):
 		
 		self.connection.send(msg)
 
-		#log.info("Install flow rule from Client: %s -------> Server: %s"%(client_ip,server_ip))
+		
 
 
 	# Install the flow rule from the server to the client.
@@ -204,7 +200,7 @@ class LoadBalancer(object):
 		msg.actions.append(of.ofp_action_output(port=outport))							#the port which the packet will pass 
 		
 		self.connection.send(msg)
-		#log.info("Flow rule from Server: %s -------> Client: %s"%(server_ip,client_ip))
+		
 
 
 	# Handles packets that are coming in
@@ -289,8 +285,7 @@ class LoadBalancer(object):
 			return
 
 
-#launch application with following arguments:	
-#ip: public service ip, servers: ip addresses of servers (in string format)
+
 def launch(ip, servers,weights="",mode=""): 
 	log.info("Loading Simple Load Balancer module")
 	server_ips = servers.replace(","," ").split()
